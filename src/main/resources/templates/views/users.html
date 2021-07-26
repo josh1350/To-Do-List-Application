@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Task manager">
+    <meta property="og:url" content=" https://task-manager-r.herokuapp.com">
+    <meta property="og:image" content="images/task-manager.png">
+    <base href="/">
+
+    <link rel="stylesheet" href="css/flatly/bootstrap.css">
+    <link rel="stylesheet" href="css/flatly/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="css/mystyle.css">
+    <script src="webjars/jquery/jquery.min.js"></script>
+    <script src="webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+    <title>Users List</title>
+</head>
+
+<body>
+
+    <header>
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <a class="navbar-brand mr-4" href="#">Task Manager</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+
+                    <!--Home-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+
+                    <!--Tasks list-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/tasks">Tasks List</a>
+                    </li>
+
+                    <!--Assign tasks-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/assignment">Assign Tasks</a>
+                    </li>
+
+                    <!--Create New Task-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/task/create">Create New Task</a>
+                    </li>
+
+                    <!--Users List-->
+                    <li class="active nav-item mr-4">
+                        <a class="nav-link" href="/users">Users List</a>
+                    </li>
+
+                    <!--Profile-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/profile">Your Profile</a>
+                    </li>
+
+                    <!--About-->
+                    <li class="nav-item mr-4">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">manager@mail.com</a>
+                    </li>
+
+
+                    <li>
+                        <form class="form-inline my-2 my-lg-0" action="logout" method="post"><input type="hidden"
+                                name="_csrf" value="bd697633-6c63-4994-af9a-b5a93a82ec59">
+                            <button class="btn btn-secondary my-2 my-sm-0 mr-4" type="submit">Log out</button>
+                        </form>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+
+
+    </header>
+
+    <main class="container">
+        <div class="card mb-3">
+    
+            <h1 class="my-highest-header card-header">Users List</h1>
+    
+            <div class="card card-body">
+                <div class="modal" id="modal-soft-delete1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;admin?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/1">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete2">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Manager?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/2">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete3">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Mark?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/3">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete4">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Ann?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/4">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete5">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Ralf?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/5">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete6">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Kate?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/6">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="modal" id="modal-soft-delete7">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title text-danger">Delete Confirmation</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete user: &nbsp;&nbsp;Tom?</p>
+                                        <small>After this action, the tasks will be retained, but without the owner.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="/user/delete/7">
+                                            <span class="btn btn-danger">Delete</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><table class="table table-hover text-left">
+    
+                    <thead class="table-info">
+                    <tr>
+                        <th>Name</th>
+                        <th class="d-none d-lg-table-cell">Email</th>
+                        <th>Tasks in progress</th>
+                        <th class="d-none d-md-table-cell">Tasks completed</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+    
+                    <tbody>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/admin.png" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">admin</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">admin@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        
+                        <td>0</td>
+    
+                        <!--Tasks completed-->
+                        
+                        <td class="d-none d-md-table-cell">0</td>
+    
+                        <!--Delete button-->
+                        
+                        <td></td>
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/admin.png" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Manager</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">manager@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        <td>
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Check if website is mobile-friendly</span>
+                                     
+    
+        <span class="badge badge-info badge-pill">6</span>
+    
+     
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Tasks completed-->
+                        
+                        <td class="d-none d-md-table-cell">0</td>
+    
+                        <!--Delete button-->
+                        
+                        <td></td>
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/mark.jpg" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Mark</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">mark@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        <td>
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Check the quality of each content element</span>
+                                     
+    
+        <span class="badge badge-danger badge-pill">-2</span>
+    
+     
+                                </li>
+                                <li>
+                                    <span>Define a Contact Us page and social media details</span>
+                                     
+    
+        <span class="badge badge-danger badge-pill">-1</span>
+    
+     
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Tasks completed-->
+                        <td class="d-none d-md-table-cell">
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Collect briefing document </span>
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Delete button-->
+                        <td>
+                            <a data-toggle="modal" data-target="#modal-soft-delete3" href="user/delete/3" class="btn btn-outline-danger btn-sm">Delete
+                            </a>
+                        </td>
+                        
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/ann.jpg" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Ann</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">ann@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        <td>
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Check all web copywriting</span>
+                                     
+    
+        <span class="badge badge-warning badge-pill">0</span>
+    
+     
+                                </li>
+                                <li>
+                                    <span>Check all images and videos</span>
+                                     
+    
+        <span class="badge badge-warning badge-pill">1</span>
+    
+     
+                                </li>
+                                <li>
+                                    <span>Check all external links</span>
+                                     
+    
+        <span class="badge badge-info badge-pill">4</span>
+    
+     
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Tasks completed-->
+                        <td class="d-none d-md-table-cell">
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Define project questionnaire </span>
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Delete button-->
+                        <td>
+                            <a data-toggle="modal" data-target="#modal-soft-delete4" href="user/delete/4" class="btn btn-outline-danger btn-sm">Delete
+                            </a>
+                        </td>
+                        
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/ralf.jpg" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Ralf</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">ralf@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        <td>
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Check the 404 page and redirects</span>
+                                     
+    
+        <span class="badge badge-info badge-pill">5</span>
+    
+     
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Tasks completed-->
+                        <td class="d-none d-md-table-cell">
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Research client’s company and industry</span>
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Delete button-->
+                        <td>
+                            <a data-toggle="modal" data-target="#modal-soft-delete5" href="user/delete/5" class="btn btn-outline-danger btn-sm">Delete
+                            </a>
+                        </td>
+                        
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/kate.jpg" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Kate</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">kate@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        <td>
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Get quotation for hosting and domain</span>
+                                     
+    
+        <span class="badge badge-danger badge-pill">-5</span>
+    
+     
+                                </li>
+                                <li>
+                                    <span>Check all linked content</span>
+                                     
+    
+        <span class="badge badge-info badge-pill">2</span>
+    
+     
+                                </li>
+                                <li>
+                                    <span>Check Contact Us and other Forms</span>
+                                     
+    
+        <span class="badge badge-info badge-pill">3</span>
+    
+     
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Tasks completed-->
+                        <td class="d-none d-md-table-cell">
+                            <ol class="pl-3">
+                                <li>
+                                    <span>Get quotation for project</span>
+                                </li>
+                            </ol>
+                        </td>
+                        
+    
+                        <!--Delete button-->
+                        <td>
+                            <a data-toggle="modal" data-target="#modal-soft-delete6" href="user/delete/6" class="btn btn-outline-danger btn-sm">Delete
+                            </a>
+                        </td>
+                        
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    <tr>
+    
+                        <!--Photo & name-->
+                        <td>
+                            <img src="images/tom.jpg" alt="user photo" class="embed-responsive embed-responsive-3by4 d-inline my-photo-miniature">
+                            <div class=" d-inline ml-1">Tom</div>
+                        </td>
+    
+                        <!--Email-->
+                        <td class="d-none d-lg-table-cell">tom@mail.com</td>
+    
+                        <!--Tasks in  progress-->
+                        
+                        <td>0</td>
+    
+                        <!--Tasks completed-->
+                        
+                        <td class="d-none d-md-table-cell">0</td>
+    
+                        <!--Delete button-->
+                        <td>
+                            <a data-toggle="modal" data-target="#modal-soft-delete7" href="user/delete/7" class="btn btn-outline-danger btn-sm">Delete
+                            </a>
+                        </td>
+                        
+    
+                        <!--modal for delete confirmation-->
+                        
+                        <!--end of modal for delete confirmation-->
+    
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+    </footer>
+
+    <!--remain scroll position after redirect-->
+    <script src="resources/static/js/main.js"></script>
+
+</body>
+
+</html>
